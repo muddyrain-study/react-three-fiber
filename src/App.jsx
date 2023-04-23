@@ -1,5 +1,5 @@
 import "./App.css";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { useEffect, useRef } from "react";
 function App() {
@@ -16,6 +16,7 @@ function App() {
           intensity={0.5}
         />
         <OrbitControls autoRotate />
+        <InfoThree />
       </Canvas>
     </div>
   );
@@ -24,15 +25,25 @@ function App() {
 function BoxRotation() {
   const mesh = useRef();
   useFrame(({ clock }) => {
-    mesh.current.rotation.x = clock.getElapsedTime()
-    mesh.current.rotation.y = clock.getElapsedTime()
+    mesh.current.rotation.x = clock.getElapsedTime();
+    mesh.current.rotation.y = clock.getElapsedTime();
   });
+  const handleClick = (event) => {
+    console.log(event);
+    event.eventObject.material.color.set("red");
+  };
   return (
-    <mesh ref={mesh}>
+    <mesh ref={mesh} onClick={handleClick}>
       <boxGeometry />
       <meshBasicMaterial />
     </mesh>
   );
+}
+
+function InfoThree() {
+  const { camera, gl } = useThree();
+  console.log(camera, gl);
+  return null;
 }
 
 export default App;
