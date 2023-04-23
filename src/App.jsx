@@ -1,12 +1,13 @@
 import "./App.css";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
-import { useEffect, useRef } from "react";
+import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
+import { OrbitControls, Environment } from "@react-three/drei";
+import { Suspense, useEffect, useRef } from "react";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 function App() {
   return (
     <div className="App">
-      <Canvas>
-        <BoxRotation />
+      <Canvas camera={{ position: [0, 2, 2] }}>
+        {/* <BoxRotation /> */}
         {/* 环境光 */}
         <ambientLight args={[0xffffff, 1]} intensity={0.5} />
         {/* 平行光 */}
@@ -16,7 +17,11 @@ function App() {
           intensity={0.5}
         />
         <OrbitControls autoRotate />
-        <InfoThree />
+        {/* <InfoThree /> */}
+        <Suspense fallback={null}>
+          <Model />
+          <Environment files={"./assets/texture/024.hdr"} background />
+        </Suspense>
       </Canvas>
     </div>
   );
@@ -38,6 +43,11 @@ function BoxRotation() {
       <meshBasicMaterial />
     </mesh>
   );
+}
+
+function Model() {
+  const gltf = useLoader(GLTFLoader, "./assets/model/pad.gltf");
+  return <primitive object={gltf.scene} />;
 }
 
 function InfoThree() {
